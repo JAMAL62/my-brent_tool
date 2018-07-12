@@ -1,0 +1,6 @@
+{
+  "name":"my-project",
+  "source":"src",
+  "destination":"dist",
+  "bundlename":"bundle"
+}
