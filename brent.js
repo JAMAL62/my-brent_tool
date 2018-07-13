@@ -10,8 +10,8 @@ fs.readFile(jsonFile, 'utf8', function (err, jsonfile) {
 
     var strToJson = JSON.parse(jsonfile);
     var sourceFolder = strToJson.source;
-    var groupOfFiles=readSourceFolderFiles(sourceFolder,function (files) {
-        console.log(files)
+    var groupOfFiles=readSourceFolderFiles(sourceFolder,function (readFilesMessage) {
+        console.log(readFilesMessage)
     });
    
    
@@ -20,7 +20,7 @@ fs.readFile(jsonFile, 'utf8', function (err, jsonfile) {
 
 
 
-function readSourceFolderFiles(sourceFolder,cb) {
+function readSourceFolderFiles(sourceFolder,data) {
     fs.readdir(sourceFolder, 'utf8', function (err, files) {
         if (err) {
 
@@ -37,8 +37,13 @@ function readSourceFolderFiles(sourceFolder,cb) {
                     console.log('error on fetching SourceFile!');
                     return
                 }
-                cb(collectionOfFiles)
+                data(collectionOfFiles)
             }); 
         }
     });
 }
+ function createDistFolder(){
+     fs.open()
+ }
+
+
