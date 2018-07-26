@@ -2,40 +2,32 @@ var fs = require('fs');
 var path = require("path");
 var http = require("http");
 var jsonFile = 'brentconfig.json';
-
+var url = require("url");
 fs.readFile(jsonFile, 'utf8', function (err, jsonfile) {
     if (err) {
         console.log("error on the Json file!");
         return;
     }
-
     var strToJson = JSON.parse(jsonfile);
     var sourceFolder = strToJson.source;
 
     var destinationFolder = strToJson.destination;
     var bundleFileName = strToJson.bundleName + ".js";
+    
     var bundleFilePath = path.join(destinationFolder, bundleFileName);
-
     var htmlFileNameToRead = 'index.html';
     var pathToCreateHtml = path.join(destinationFolder, htmlFileNameToRead);
 
     readSourceFolderFiles(sourceFolder, function (filedata) {
-        createDistFolder(destinationFolder, bundleFilePath,pathToCreateHtml, function () {
+        createDistFolder(destinationFolder, bundleFilePath, pathToCreateHtml, function () {
             writeFile(bundleFilePath, filedata);
-            readhtmlFile(htmlFileNameToRead,function (htmlData) {
-                var generatedHtml = addScriptTagTohtml(htmlData,bundleFileName);
-                writeFile(pathToCreateHtml,generatedHtml);
-
-
+            readHtmlFile(htmlFileNameToRead, function (htmlData) {
+                var generatedHtml = addScriptTagTohtml(htmlData, bundleFileName);
+                writeFile(pathToCreateHtml, generatedHtml);
             });
         });
     });
-
-    //createServer()
-
-
-
-
+   // createServer(pathToCreateHtml, bundleFilePath,bundleFileName)
 });
 
 
@@ -44,15 +36,14 @@ function readSourceFolderFiles(sourceFolder, cb) {
     fs.readdir(sourceFolder, 'utf8', function (err, files) {
         if (err) {
 
-            console.log('error on fetching directoryFile!');
-            return
+            console.log('error on fetching directoryFile!')
         }
-
+console.log(files)
 
         for (var i = 0; i < files.length; i++) {
 
             var filePath = path.join(sourceFolder, files[i]);
-
+//console.log()
 
             fs.readFile(filePath, 'utf8', function (err, filedata) {
                 if (err) {
@@ -69,7 +60,7 @@ function readSourceFolderFiles(sourceFolder, cb) {
     });
 }
 
-function createDistFolder(foldername, bundleFilePath,indexhtmlpath, cb) {
+function createDistFolder(foldername, bundleFilePath, indexhtmlpath, cb) {
     if (fs.existsSync(bundleFilePath)) {
         fs.unlinkSync(bundleFilePath);
     }
@@ -98,7 +89,7 @@ function writeFile(filepath, dataToWrite) {
 }
 
 
-function readhtmlFile(htmlfilename, cb) {
+function readHtmlFile(htmlfilename, cb) {
     fs.readFile(htmlfilename, 'utf8', function (err, htmldata) {
         if (err) {
             console.log('error');
@@ -109,25 +100,37 @@ function readhtmlFile(htmlfilename, cb) {
 
 
 function addScriptTagTohtml(htmlstring, bundleFileName) {
-    var appendScriptString = "<script src='" + bundleFileName + "'" + "></script>";
-    var splitTheHtml = htmlstring.split('<body>').join('<body>' +'\n'+ appendScriptString)
+
+    var appendScriptString = "<script type='text/javascript' src='" + bundleFileName + "'" + "></script>";
+    var splitTheHtml = htmlstring.split('<body>').join('<body>' + '\n' + appendScriptString)
     return splitTheHtml;
 }
 
 
+// function createServer(pathToCreateHtml, bundleFilePath,bundleFileName) {
+//     const server = http.createServer(function (req, res) {
+//         var pathname = url.parse(req.url).pathname;
+//       var urlPath = "/" + bundleFileName;
 
-function createServer() {
-    const s = http.createServer(function (req,res) {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain');
-        res.end('Hello World!\n')
-    });
+//         console.log("Request for " + pathname + " received.");
+//         res.writeHead(200, {'Content-Type': 'text/html'});
 
-    s.listen(9090,"localhost",function () {
-        console.log("server running")
-    })
+//         if (pathname == "/") {
+//             html = fs.readFileSync(pathToCreateHtml, "utf8");
+//             res.write(html);
+//         } else if (pathname == urlPath) {
+//             script = fs.readFileSync(bundleFilePath, "utf8");
+//             res.write(script)
+//         }
+//         res.end();
+//     });
+//     server.listen(9090, "localhost", function () {
+//         ;
+//         console.log('server is running on localhost:9090');
+//     });
+// }
 
-}
+
 
 
 

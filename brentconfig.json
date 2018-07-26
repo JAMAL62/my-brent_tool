@@ -1,14 +1,8 @@
 {
-<<<<<<< HEAD
   "name": "my-project",
   "source": "src",
   "destination": "dist",
   "bundleName": "bundle"
 }
-=======
-  "name":"my-project",
-  "source":"src",
-  "destination":"dist",
-  "bundlename":"bundle"
-}
->>>>>>> 387966b5be1b5edbb5567c5599549de449b01c19
+
+
